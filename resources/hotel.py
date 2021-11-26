@@ -1,4 +1,4 @@
-from flask_restful import Resource
+from flask_restful import Resource , reqparse
 
 hoteis = [
 {
@@ -67,8 +67,34 @@ class Hotel(Resource):
             return {'message':'Hotel id not found'},404 #padrao para retorno de erros
         pass
 
-    def post(self):
-        pass
+    #o segundo argumento eh provindo da URI
+    def post(self, hotel_id):
+        argumentos= reqparse.RequestParser()
+
+        #somente os argumentos definidos abaixo sao aceitos no post
+        argumentos.add_argument('nome')
+        argumentos.add_argument('estrelas')
+        argumentos.add_argument('diaria')
+        argumentos.add_argument('cidade')
+
+        #recebendo os valores para uma variavel no formato dict
+        dadosRecebidos = argumentos.parse_args()
+
+        novo_hotel ={
+            'hotel_id':hotel_id,
+            'nome':dadosRecebidos['nome'],
+            'estrelas':dadosRecebidos['estrelas'],
+            'diaria':dadosRecebidos['diaria'],
+            'cidade':dadosRecebidos['cidade']
+        }
+
+        #adicionando no dict do hotel
+        hoteis_O1['hotel_id'][hotel_id]=novo_hotel
+
+        #adicionando tambem na lista de hoteis
+        hoteis.append(novo_hotel)
+
+        return novo_hotel,200 #retornando o hotel criado e o codigo de sucesso
 
     def put(self):
         pass
