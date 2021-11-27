@@ -1,4 +1,5 @@
 from flask_restful import Resource , reqparse
+from models.hotel import HotelModel
 
 hoteis = [
 {
@@ -93,13 +94,16 @@ class Hotel(Resource):
         #recebendo os valores para uma variavel no formato dict
         dadosRecebidos = self.argumentos.parse_args()
 
-        novo_hotel ={
+        #passando os kargs como argumento (dadosRecebidos eh um dict) da classe HotelModel e entao utilizando a funcao json() para retornar o json do objeto
+        novo_hotel=HotelModel(hotel_id, **dadosRecebidos).json()
+        '''novo_hotel ={
             'hotel_id':hotel_id,
             'nome':dadosRecebidos['nome'],
             'estrelas':dadosRecebidos['estrelas'],
             'diaria':dadosRecebidos['diaria'],
             'cidade':dadosRecebidos['cidade']
-        }
+            ...
+        }'''
 
         self.adicionaHotel(novo_hotel)
 
@@ -109,9 +113,7 @@ class Hotel(Resource):
 
         #obtendo dados
         dadosRecebidos = self.argumentos.parse_args()
-        novo_hotel ={
-            'hotel_id':hotel_id, **dadosRecebidos
-        }
+        novo_hotel =HotelModel(hotel_id, **dadosRecebidos).json()
         # o codigo acima faz o mesmo que este de baixo porem de uma forma mais eficiente
         '''
             novo_hotel ={
