@@ -75,11 +75,10 @@ class Hotel(Resource):
         hoteis.append(novoHotel)
 
     def get(self, hotel_id):
-        hotel=self.findHotel(hotel_id)
+        hotel=HotelModel.find_hotel(hotel_id)
         if hotel :
-            return hotel
+            return hotel.json()
         return {'message':'Hotel id not found'},404 #padrao para retorno de erros
-        
         pass
 
     #o segundo argumento eh provindo da URI
