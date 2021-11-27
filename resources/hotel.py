@@ -59,26 +59,39 @@ class Hoteis(Resource):
         return {'hoteis': hoteis_O1}#retornando um dict que ira ser convertido para json
 
 class Hotel(Resource):
+    #atributos de um hotel (um pouco estranho ver dessa forma mas faz sentido) (eles so sao chamados mesmo quando chamamos o parse_args)
+    argumentos= reqparse.RequestParser()
+    #somente os argumentos definidos abaixo sao aceitos no post
+    argumentos.add_argument('nome')
+    argumentos.add_argument('estrelas')
+    argumentos.add_argument('diaria')
+    argumentos.add_argument('cidade')
 
-    def get(self, hotel_id):
+
+    def findHotel(self,hotel_id):
         try:
             return hoteis_O1['hotel_id'][hotel_id]
         except:
-            return {'message':'Hotel id not found'},404 #padrao para retorno de erros
+            return None
+
+    def adicionaHotel(self, novoHotel):
+        #adicionando no dict do hotel
+        hoteis_O1['hotel_id'][novoHotel['hotel_id']]=novoHotel
+        #adicionando tambem na lista de hoteis
+        hoteis.append(novoHotel)
+
+    def get(self, hotel_id):
+        hotel=self.findHotel(hotel_id)
+        if hotel :
+            return hotel
+        return {'message':'Hotel id not found'},404 #padrao para retorno de erros
+        
         pass
 
     #o segundo argumento eh provindo da URI
     def post(self, hotel_id):
-        argumentos= reqparse.RequestParser()
-
-        #somente os argumentos definidos abaixo sao aceitos no post
-        argumentos.add_argument('nome')
-        argumentos.add_argument('estrelas')
-        argumentos.add_argument('diaria')
-        argumentos.add_argument('cidade')
-
         #recebendo os valores para uma variavel no formato dict
-        dadosRecebidos = argumentos.parse_args()
+        dadosRecebidos = self.argumentos.parse_args()
 
         novo_hotel ={
             'hotel_id':hotel_id,
@@ -88,16 +101,37 @@ class Hotel(Resource):
             'cidade':dadosRecebidos['cidade']
         }
 
-        #adicionando no dict do hotel
-        hoteis_O1['hotel_id'][hotel_id]=novo_hotel
-
-        #adicionando tambem na lista de hoteis
-        hoteis.append(novo_hotel)
+        self.adicionaHotel(novo_hotel)
 
         return novo_hotel,200 #retornando o hotel criado e o codigo de sucesso
+     
+    def put(self,hotel_id):
 
-    def put(self):
-        pass
+        #obtendo dados
+        dadosRecebidos = self.argumentos.parse_args()
+        novo_hotel ={
+            'hotel_id':hotel_id, **dadosRecebidos
+        }
+        # o codigo acima faz o mesmo que este de baixo porem de uma forma mais eficiente
+        '''
+            novo_hotel ={
+                'hotel_id':hotel_id,
+                'nome':dadosRecebidos['nome'],
+                'estrelas':dadosRecebidos['estrelas'],
+                'diaria':dadosRecebidos['diaria'],
+                'cidade':dadosRecebidos['cidade']
+            }
+        '''
+
+        hotel=self.findHotel(hotel_id)
+        if hotel :
+            hotel.update(novo_hotel)
+            return novo_hotel, 200
+
+        else:
+            self.adicionaHotel(novo_hotel)
+            return novo_hotel, 201 #novo codigo para indicar que o hotel foi criado
 
     def delete(self):
         pass    #para nao precisar implementar o codigo ainda
+    
