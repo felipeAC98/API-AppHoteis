@@ -48,3 +48,8 @@ class HotelModel(banco.Model): #herdando o modelo de banco
         self.estrelas=dados['estrelas']
         self.diaria=dados['diaria']
         self.cidade=dados['cidade']      
+
+    def delete_hotel(self):
+        #salvando os atributos da classe hotel recebidos como uma nova linha do banco
+        banco.session.delete(self)
+        banco.session.commit()   
