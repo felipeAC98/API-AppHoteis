@@ -102,26 +102,18 @@ class Hotel(Resource):
 
         #obtendo dados
         dadosRecebidos = self.argumentos.parse_args()
-        novo_hotel =HotelModel(hotel_id, **dadosRecebidos).json()
-        # o codigo acima faz o mesmo que este de baixo porem de uma forma mais eficiente
-        '''
-            novo_hotel ={
-                'hotel_id':hotel_id,
-                'nome':dadosRecebidos['nome'],
-                'estrelas':dadosRecebidos['estrelas'],
-                'diaria':dadosRecebidos['diaria'],
-                'cidade':dadosRecebidos['cidade']
-            }
-        '''
+        hotel_existente=HotelModel.find_hotel(hotel_id)
 
-        hotel=self.findHotel(hotel_id)
-        if hotel :
-            hotel.update(novo_hotel)
-            return novo_hotel, 200
+        #caso ohotel ja exista vamos somente atualizar os dados dele
+        if hotel_existente :
+            hotel_existente.update_hotel(**dadosRecebidos)
+            hotel_existente.save_hotel()
+            return hotel_existente.json(), 200
 
         else:
-            self.adicionaHotel(novo_hotel)
-            return novo_hotel, 201 #novo codigo para indicar que o hotel foi criado
+            novo_hotel =HotelModel(hotel_id, **dadosRecebidos)
+            novo_hotel.save_hotel()
+            return novo_hotel.json(), 201 #novo codigo para indicar que o hotel foi criado
 
     def delete(self,hotel_id):
         global hoteis

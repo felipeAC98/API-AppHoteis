@@ -42,3 +42,9 @@ class HotelModel(banco.Model): #herdando o modelo de banco
         #salvando os atributos da classe hotel recebidos como uma nova linha do banco
         banco.session.add(self)
         banco.session.commit()
+
+    def update_hotel(self, **dados):
+        self.nome=dados['nome']
+        self.estrelas=dados['estrelas']
+        self.diaria=dados['diaria']
+        self.cidade=dados['cidade']      
