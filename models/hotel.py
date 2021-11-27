@@ -26,3 +26,19 @@ class HotelModel(banco.Model): #herdando o modelo de banco
             'diaria':self.diaria,
             'cidade':self.cidade            
         }
+
+    @classmethod
+    def find_hotel(cls, hotel_id):
+
+        #select * from hoteis h where h.hotel_id = $hotel_id 
+        hotel= cls.query.filter_by(hotel_id=hotel_id).first() #o metodo query eh da classe que extendemos
+
+        if hotel:
+            return hotel
+        else:
+            return None
+
+    def save_hotel(self):
+        #salvando os atributos da classe hotel recebidos como uma nova linha do banco
+        banco.session.add(self)
+        banco.session.commit()

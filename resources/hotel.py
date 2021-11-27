@@ -68,13 +68,6 @@ class Hotel(Resource):
     argumentos.add_argument('diaria')
     argumentos.add_argument('cidade')
 
-
-    def findHotel(self,hotel_id):
-        try:
-            return hoteis_O1['hotel_id'][hotel_id]
-        except:
-            return None
-
     def adicionaHotel(self, novoHotel):
         #adicionando no dict do hotel
         hoteis_O1['hotel_id'][novoHotel['hotel_id']]=novoHotel
@@ -91,23 +84,20 @@ class Hotel(Resource):
 
     #o segundo argumento eh provindo da URI
     def post(self, hotel_id):
+
+        #verificando se o hotel id ja existe
+        if HotelModel.find_hotel(hotel_id): #utilizando uma funcao da classe(cls) para efetuar a busca no banco
+            return {"message": "Hotel ID '{}' already exists.".format(hotel_id)},400
+
         #recebendo os valores para uma variavel no formato dict
         dadosRecebidos = self.argumentos.parse_args()
 
-        #passando os kargs como argumento (dadosRecebidos eh um dict) da classe HotelModel e entao utilizando a funcao json() para retornar o json do objeto
-        novo_hotel=HotelModel(hotel_id, **dadosRecebidos).json()
-        '''novo_hotel ={
-            'hotel_id':hotel_id,
-            'nome':dadosRecebidos['nome'],
-            'estrelas':dadosRecebidos['estrelas'],
-            'diaria':dadosRecebidos['diaria'],
-            'cidade':dadosRecebidos['cidade']
-            ...
-        }'''
+        #passando os kargs como argumento (dadosRecebidos eh um dict) da classe HotelModel e entao instanciando um objeto da classe hotelModel
+        novo_hotel=HotelModel(hotel_id, **dadosRecebidos)
 
-        self.adicionaHotel(novo_hotel)
-
-        return novo_hotel,200 #retornando o hotel criado e o codigo de sucesso
+        #chamando a funcao save_hotel
+        novo_hotel.save_hotel()
+        return novo_hotel.json()
      
     def put(self,hotel_id):
 
