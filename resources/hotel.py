@@ -132,6 +132,9 @@ class Hotel(Resource):
             self.adicionaHotel(novo_hotel)
             return novo_hotel, 201 #novo codigo para indicar que o hotel foi criado
 
-    def delete(self):
+    def delete(self,hotel_id):
+        global hoteis
+        hoteis=[hotel for hotel in hoteis if hotel['hotel_id'] !=hotel_id]
+        return {'message':'Hotel deleted'}, 200 #novo codigo para indicar que o hotel foi criado
         pass    #para nao precisar implementar o codigo ainda
     
