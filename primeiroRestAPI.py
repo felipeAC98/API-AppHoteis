@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from resources.hotel import Hoteis, Hotel
+from resources.usuario import User
 
 app = Flask(__name__)                                       #o app do tipo flask
 app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///banco.db' #para criar na raiz do diretorio um banco do tipo sqlite
@@ -14,6 +15,8 @@ def cria_banco():
 #o primeiro parametro eh referente a classe que sera invocada
 api.add_resource(Hoteis,'/hoteis') #adicionando o recurso dentro da URI /hoteis
 api.add_resource(Hotel,'/hoteis/<string:hotel_id>') #adicionando o recurso dentro da URI /hoteis
+
+api.add_resource(User,'/usuarios/<int:user_id>') #adicionando o recurso dentro da URI /hoteis
 
 if __name__=='__main__':
     from sql_alchemy import banco 
