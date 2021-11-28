@@ -83,6 +83,7 @@ class Hotel(Resource):
         return {'message':'Hotel id not found'},404 #padrao para retorno de erros
         pass
 
+    #POST- Para criar algo novo
     #o segundo argumento eh provindo da URI
     def post(self, hotel_id):
 
@@ -102,7 +103,8 @@ class Hotel(Resource):
         except:
             return {'message':'An internal error ocurred trying to save hotel'}, 500 #500 eh internal server error
         return novo_hotel.json()
-     
+    
+    #PUT - Para atualizar alguma informacao de algum campo (ainda assim precisa receber todos valores, inclusive aqueles que nao serao alterados)
     def put(self,hotel_id):
 
         #obtendo dados
