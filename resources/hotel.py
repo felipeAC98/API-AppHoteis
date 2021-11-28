@@ -1,5 +1,6 @@
 from flask_restful import Resource , reqparse
 from models.hotel import HotelModel
+from flask_jwt_extended import jwt_required
 
 #herdando a classe resource
 class Hoteis(Resource):
@@ -28,6 +29,7 @@ class Hotel(Resource):
 
     #POST- Para criar algo novo
     #o segundo argumento eh provindo da URI
+    @jwt_required() #definindo que eh necessario receber um token de acesso para realizar esta chamada
     def post(self, hotel_id):
 
         #verificando se o hotel id ja existe
@@ -48,6 +50,7 @@ class Hotel(Resource):
         return novo_hotel.json()
     
     #PUT - Para atualizar alguma informacao de algum campo (ainda assim precisa receber todos valores, inclusive aqueles que nao serao alterados)
+    @jwt_required()
     def put(self,hotel_id):
 
         #obtendo dados
@@ -69,6 +72,7 @@ class Hotel(Resource):
             return {'message':'An internal error ocurred trying to save hotel'}, 500 #500 eh internal server error
         return novo_hotel.json(), 201 #novo codigo para indicar que o hotel foi criado
 
+    @jwt_required()
     def delete(self,hotel_id):
 
         hotel_existente=HotelModel.find_hotel(hotel_id)
