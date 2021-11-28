@@ -1,57 +1,6 @@
 from flask_restful import Resource , reqparse
 from models.hotel import HotelModel
 
-hoteis = [
-{
-    'hotel_id':'alpha',
-    'nome':'Alpha Hotel',
-    'estrelas':4.3,
-    'diaria':420,
-    'cidade':'Sao Jose do Rio Preto'
-},
-{
-    'hotel_id':'bravo',
-    'nome':'bravo Hotel',
-    'estrelas':4.8,
-    'diaria':730,
-    'cidade':'Sao Paulo'
-},
-{
-    'hotel_id':'charlie',
-    'nome':'charlie Hotel',
-    'estrelas':3.3,
-    'diaria':50,
-    'cidade':'Bady Bassitt'
-}
-]
-
-#mesma lista de cima porem em forma de dicionario para ter uma busca O1 quando for relacionada ao ID do hotel
-hoteis_O1 = {
-    'hotel_id':{
-        'alpha':{
-            'hotel_id':'alpha',
-            'nome':'Alpha Hotel',
-            'estrelas':4.3,
-            'diaria':420,
-            'cidade':'Sao Jose do Rio Preto'
-        },
-        'bravo':{
-            'hotel_id':'bravo',
-            'nome':'bravo Hotel',
-            'estrelas':4.8,
-            'diaria':730,
-            'cidade':'Sao Paulo'
-         },
-        'charlie':{
-            'hotel_id':'charlie',
-            'nome':'charlie Hotel',
-            'estrelas':3.3,
-            'diaria':50,
-            'cidade':'Bady Bassitt'
-         },        
-    }
-}
-
 #herdando a classe resource
 class Hoteis(Resource):
 
@@ -69,12 +18,6 @@ class Hotel(Resource):
     argumentos.add_argument('estrelas', type=float, required=True, help="The field 'estrelas' cannot be left blank")
     argumentos.add_argument('diaria')
     argumentos.add_argument('cidade')
-
-    def adicionaHotel(self, novoHotel):
-        #adicionando no dict do hotel
-        hoteis_O1['hotel_id'][novoHotel['hotel_id']]=novoHotel
-        #adicionando tambem na lista de hoteis
-        hoteis.append(novoHotel)
 
     def get(self, hotel_id):
         hotel=HotelModel.find_hotel(hotel_id)
