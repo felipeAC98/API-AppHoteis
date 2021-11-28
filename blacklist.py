@@ -1,0 +1,1 @@
+BLACKLIST=set() #set eh muito semelhante a um dict com IDs unicos, por isso vamos utiliza-lo

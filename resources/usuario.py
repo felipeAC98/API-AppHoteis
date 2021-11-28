@@ -1,7 +1,8 @@
 from flask_restful import Resource , reqparse
 from models.usuario import UserModel
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from werkzeug.security import safe_str_cmp
+from blacklist import BLACKLIST
 
 atributos=reqparse.RequestParser()
 atributos.add_argument('login',type=str,required=True, help="The field 'login' cannot be left blank")
@@ -46,6 +47,7 @@ class UserRegister(Resource):
         user.save_user()
         return {"message":'User created successfully'} ,201
 
+#cada classe eh um endpoint da nossa URI
 class UserLogin(Resource):
 
     @classmethod
@@ -60,3 +62,12 @@ class UserLogin(Resource):
             return{'access_token':token_de_acesso},200
 
         return {'message':'The username or password is incorrect.'},401
+
+class UserLogout(Resource):
+
+    #quando o usuario for fazer o logout ele ira enviar um post, isso ira fazer com que seu jti seja adicionado a uma blacklist 
+    @jwt_required()
+    def post(self):
+        jwt_id= get_jwt()['jti'] #Obtendo o identificador do token do usuario 
+        BLACKLIST.add(jwt_id)
+        return{'message':'Logged out successfully'},200
